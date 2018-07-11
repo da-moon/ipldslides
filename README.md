@@ -1,10 +1,22 @@
 
 
+
+|                |ASCII                          |HTML                         |
+|----------------|-------------------------------|-----------------------------|
+|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
+|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
+|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
+
+
+
 # IPLD and hash-based data structures
 
 # Table of Contents
 
-- [Overveiw](#overview)
+* [Overveiw](#overview)
+- [IPLD Building Blocks](#ipld-building-blocks)
+	* [`<Node> Interface`](#node-interface)
+	* [`<Link> Struct`](#link-struct)
 
 # Overview
 
@@ -269,4 +281,5 @@ here is an example on how to find coinbase transaction script hash in this block
 	coinbase := coinbaseTxNode.([]*TxIn)
 	fmt.Printf("%x", coinbase[0].Script)
 ```
+
 
