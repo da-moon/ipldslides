@@ -5,6 +5,7 @@
 # Table of Contents
 
 - [Overveiw](#overview)
+
 # Overview
 
 IPLD can be used to link different hash-based datastructures with each other. For instance, one can store a Bitcoin block inside a git object and use that Git object to read transaction inside the Bitcoin block. 
@@ -17,7 +18,6 @@ IPLD uses [`<Node>`](https://github.com/ipfs/go-ipld-format/blob/master/format.g
 ## [`<Node> Interface`](https://github.com/ipfs/go-ipld-format/blob/master/format.go)
 `<Node>` is the base interface all IPLD nodes must implement. Essentially, Content that were stored in an arbitary data-structures would be stored as a node, content such as a Bitcoin Block, A Bitcoin Transaction and so on. 
 `<Node>` interface forces implementation of the following methods
-<pre>
 | Function Name              | Return Data type      | Purpose                                            |
 |----------------------------|-----------------------|----------------------------------------------------|
 | ResolveLink(path []string) | *Link, []string,error | call `<resolve()>` and assert the output is a link |
@@ -27,18 +27,16 @@ IPLD uses [`<Node>`](https://github.com/ipfs/go-ipld-format/blob/master/format.g
 | Size()                     | uint64, error         | return the size of the serialized object           |
 | Resolver                   |                       | An interface that implements other methods         |
 | blocks.Block               |                       | An interface that implements other methods         |
-</pre>
+
 
 ## [`<Link> Struct` ](https://github.com/ipfs/go-ipld-format/blob/master/format.go)
 
-<pre>
 Information needed to traverse from one node to another node is stored in `<Link>`.
 | Name   | Data type | Purpose                                                     |
 |--------|-----------|-------------------------------------------------------------|
 | Name   | string    | unique UTF string name of the link. Seems not so important. |
 | Size   | uint64    | the cumulative size of target object                        |
 | Cid    | *cid.Cid  | Metadata(such as multihash) of the target object            |
-</pre>
 
 ## [`<Resolver> Interface` ](https://github.com/ipfs/go-ipld-format/blob/master/format.go)
 `<Resolver>` interfaces forces implementation of the following methods
@@ -130,6 +128,7 @@ data, _ := hex.DecodeString(string(hexBinaryData[:len(hexBinaryData)-1]))
 ```go
 nodes, _ := DecodeBlockMessage(data)
 ```
+
 ## Accessing Fields IPLD Way
 
 there are  two functions for accessing fields IPLD way [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go) , [`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
@@ -180,6 +179,68 @@ func (b *Block) ResolveLink(path []string) (*node.Link, []string, error) {
 ```
 > As you can see, it uses `<Resolve()>` to handle the task it is given.
 
+## Exploring Content inside <`Nodes`>
+### `<Node[0]>` : [bitcoin block]
+- Node CID : z4HFzdHDpHkdYxuxbEs6LbvDgTVgwFUqWGvtCMiGA8ARFBmEKks
+#### Link[0]
+- Link Name :  tx
+- Link CID : z4HhYA9d5QwmP3Q7G9kKMX4Y8H6U6UDvQV8wMPwGkKR3P3TEMkv
+#### Link[1]
+- Link Name :  parent
+- Link CID : z4HFzdHLYtA4PX1XunHBi3LbSWjrrdGNBq5QWMqXnPjCXa1AcTh
+### `<Node[1]>` : [bitcoin transaction]
+- Node CID : z4HhYA9QsbLXdNrHCwyN1HMBn6gRQDc6YbBcMEQWJJ7ZxxSBawr
+#### Link[0]
+- Link Name :  inputs/0/prevTx
+- Link CID : z4HhYA9MnoTwXZxBKrrJE4Xj13doB7FVnYsaWVhAQep5MSZd5F5
+### `<Node[2]>` : [bitcoin transaction]
+- Node CID : z4HhYA9YgicxeEBStHvHMx3rup1c4wFeVbHvk2GKkNpChdsbivj
+#### Link[0]
+- Link Name :  inputs/0/prevTx
+- Link CID : z4HhYA9ZTd64g1Ze5y2SNt69RmmEmhBRAFXizXjgvuuRFs5b99t
+### `<Node[3]>` : [bitcoin transaction]
+- Node CID : z4HhYA9aG21HGh1gZhNtXPLoi2S2L2aAYVcR6AxZufsj1AEQZ7W
+#### Link[0]
+- Link Name :  inputs/0/prevTx
+- Link CID : z4HhYA9TrX7FcQssUPZ71kapy7UDzUVw6TLH6b4osoKpxNqe1xk
+#### Link[1]
+- Link Name :  inputs/1/prevTx
+- Link CID : z4HhYA9Twn7vgHWja9UZ9T2a6otAnLhWFvTGLvxoVNtKQdmuQeV
+#### Link[2]
+- Link Name :  inputs/2/prevTx
+- Link CID : z4HhYA9QZZNnTZeFbNQLUkduj8Nru9wMPYgkfnZRXyJeUkFi8J6
+### `<Node[4]>` : [bitcoin transaction]
+- Node CID : z4HhYA9MtNmd4MfPJfoJnFJhog5a7225KZd1kUjWuwQeDAe4rXW
+#### Link[0]
+- Link Name :  inputs/0/prevTx
+- Link CID : z4HhYA9bJ5maMxrxdLQb4spGbo78jViF3t7J58PZk8dMdX7fzBb
+#### Link[1]
+- Link Name :  inputs/1/prevTx
+- Link CID : z4HhYA9YteeJtnNsuXyNsBp8ypFiBVx2p5xWbfmK7xvkj9w4h3K
+### `<Node[5]>` : [bitcoin transaction tree]
+- Node CID : z4HhYA9c6jVkfEM2g4a7T1StgmZzq99kSrcq3hGjbs5BRYx7PKa
+#### Link[0]
+- Link Name :
+- Link CID : z4HhYA9QsbLXdNrHCwyN1HMBn6gRQDc6YbBcMEQWJJ7ZxxSBawr
+#### Link[1]
+- Link Name :
+- Link CID : z4HhYA9YgicxeEBStHvHMx3rup1c4wFeVbHvk2GKkNpChdsbivj
+### `<Node[6]>` : [bitcoin transaction tree]
+- Node CID : z4HhYA9UA5UiJ3iZC2bjo6Aj9QFjgskM8fjWnuma8p7ESXQyeSr
+#### Link[0]
+- Link Name :
+- Link CID : z4HhYA9aG21HGh1gZhNtXPLoi2S2L2aAYVcR6AxZufsj1AEQZ7W
+#### Link[1]
+- Link Name :
+- Link CID : z4HhYA9MtNmd4MfPJfoJnFJhog5a7225KZd1kUjWuwQeDAe4rXW
+### `<Node[7]>` : [bitcoin transaction tree]
+- Node CID : z4HhYA9d5QwmP3Q7G9kKMX4Y8H6U6UDvQV8wMPwGkKR3P3TEMkv
+#### Link[0]
+- Link Name :
+- Link CID : z4HhYA9c6jVkfEM2g4a7T1StgmZzq99kSrcq3hGjbs5BRYx7PKa
+#### Link[1]
+- Link Name :
+- Link CID : z4HhYA9UA5UiJ3iZC2bjo6Aj9QFjgskM8fjWnuma8p7ESXQyeSr
 ## Direct Primitive Data-Type Access
 
 `<Node>` can be used to run functions on and access fields in Bitcoin blocks and read Transaction values. 
@@ -192,18 +253,20 @@ Functions can also get called. For instance, you can see the block header by cal
 header := nodes[0].(*Block).Timestamp
 ```
 
-## Accessing fileds with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go) or 
+## Accessing fileds with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go) or [`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
 
-[`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
+### Data-Type access with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
 
-### Primitve Data-Type access with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
-
-`<nodes[0]>` is the starting point of travers and storee `<Block>` so we call the `<Resolve>` on it with a string of the field we want to access. Make sure to do type assertion at the end. for instance :
+`<nodes[0]>` is the starting point of travers and storee `<Block>` so we call the `<Resolve()>` on it with a string of the field we want to access. Make sure to do type assertion at the end. for instance :
 ```go
     versionpInterface, _,_ := nodes[0].Resolve([]string{"version"})
 	version := versionpInterface.(uint32)
 ```
-
-### Primitve Data-Type access with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
-
+`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go) can be used to accees field types of type `<*cid.Cid>` without type assertion. 
+here is an example on how to find coinbase transaction script hash in this block
+```go
+	coinbaseTxNode, _, _ := nodes[1].Resolve([]string{"inputs"})
+	coinbase := coinbaseTxNode.([]*TxIn)
+	fmt.Printf("%x", coinbase[0].Script)
+```
 
