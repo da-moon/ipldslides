@@ -1,8 +1,13 @@
+
+
 # IPLD and hash-based data structures
 
 # Table of Contents
 
 - [Overveiw](#overview)
+- [Binary to Block](#binary-to-block)
+- [Planning](#planning)
+- [Meetings](#meetings)
 
 # Overview
 
@@ -126,25 +131,13 @@ data, _ := hex.DecodeString(string(hexBinaryData[:len(hexBinaryData)-1]))
 ```go
 nodes, _ := DecodeBlockMessage(data)
 ```
-## Direct Primitive Data-Type Access
-
-`<Node>` can be used to run functions on and access fields in Bitcoin blocks and read Transaction values. 
-an example is 
-```go
-timestamp := nodes[0].(*Block).Timestamp
-```
-Functions can also get called. For instance, you can see the block header by calling [`<HexHash()>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
-```go
-header := nodes[0].(*Block).Timestamp
-```
 ## Accessing Fields IPLD Way
 
 there are  two functions for accessing fields IPLD way [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go) , [`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
 
 ### [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
-This function can be used to traverse through <`Links`> and also access primitive types since it returns an `<interface{}>`. 
-<!-- Test -->
-
+This function can be used to traverse through <`Links`> and also access primitive types since it returns an `<interface{}>`.
+Keep in mind that in this case, we need [**Type Assertion**](https://tour.golang.org/methods/15)
 ```go
 func (b *Block) Resolve(path []string) (interface{}, []string, error) {
 	if len(path) == 0 {
@@ -188,5 +181,30 @@ func (b *Block) ResolveLink(path []string) (*node.Link, []string, error) {
 ```
 > As you can see, it uses `<Resolve()>` to handle the task it is given.
 
+## Direct Primitive Data-Type Access
+
+`<Node>` can be used to run functions on and access fields in Bitcoin blocks and read Transaction values. 
+an example is 
+```go
+timestamp := nodes[0].(*Block).Timestamp
+```
+Functions can also get called. For instance, you can see the block header by calling [`<HexHash()>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
+```go
+header := nodes[0].(*Block).Timestamp
+```
+
+## Accessing fileds with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go) or 
+
+[`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
+
+### Primitve Data-Type access with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
+
+`<nodes[0]>` is the starting point of travers and storee `<Block>` so we call the `<Resolve>` on it with a string of the field we want to access. Make sure to do type assertion at the end. for instance :
+```go
+    versionpInterface, _,_ := nodes[0].Resolve([]string{"version"})
+	version := versionpInterface.(uint32)
+```
+
+### Primitve Data-Type access with [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
 
 
