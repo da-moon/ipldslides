@@ -254,6 +254,8 @@ here is an example on how to find coinbase transaction script hash in this block
 
 ## Exploring Content inside <`Nodes`>
 
+![alt text](https://raw.githubusercontent.com/damoonazarpazhooh/ipldslides/master/NodeDiagram.PNG)
+
 ### `<Node[0]>` : [bitcoin block]
 
 - Node CID : z4HFzdHDpHkdYxuxbEs6LbvDgTVgwFUqWGvtCMiGA8ARFBmEKks
