@@ -145,4 +145,51 @@ header := nodes[0].(*Block).Timestamp
 there are  two functions for accessing fields IPLD way [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go) , [`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
 
 ### [`<Resolve>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
-This function can be used to traverse through <`Links`> and also access primitive types since it returns an `<interface{}>`
+This function can be used to traverse through <`Links`> and also access primitive types since it returns an `<interface{}>`. 
+<!-- Test -->
+
+```go
+func (b *Block) Resolve(path []string) (interface{}, []string, error) {
+	if len(path) == 0 {
+		return nil, nil, fmt.Errorf("zero length path")
+	}
+	switch path[0] {
+	case "version":
+		return b.Version, path[1:], nil
+	case "timestamp":
+		return b.Timestamp, path[1:], nil
+	case "difficulty":
+		return b.Difficulty, path[1:], nil
+	case "nonce":
+		return b.Nonce, path[1:], nil
+	case "parent":
+		return &node.Link{Cid: b.Parent}, path[1:], nil
+	case "tx":
+		return &node.Link{Cid: b.MerkleRoot}, path[1:], nil
+	default:
+		return nil, nil, fmt.Errorf("no such link")
+	}
+}
+```
+### [`<ResolveLink>`](https://github.com/ipfs/go-ipld-btc/blob/master/btc.go)
+
+this function is used when you strictly want to access and traverse through links which means Fields with data type `<*cid.Cid>` can **only** get accessed.
+```go
+func (b *Block) ResolveLink(path []string) (*node.Link, []string, error) {
+	out, rest, err := b.Resolve(path)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	lnk, ok := out.(*node.Link)
+	if !ok {
+		return nil, nil, fmt.Errorf("object at path was not a link")
+	}
+
+	return lnk, rest, nil
+}
+```
+> As you can see, it uses `<Resolve()>` to handle the task it is given.
+
+
+
