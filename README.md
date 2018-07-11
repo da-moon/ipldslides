@@ -3,9 +3,6 @@
 # Table of Contents
 
 - [Overveiw](#overview)
-- [Binary to Block](#binary-to-block)
-- [Planning](#planning)
-- [Meetings](#meetings)
 
 # Overview
 
