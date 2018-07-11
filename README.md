@@ -5,10 +5,6 @@
 # Table of Contents
 
 - [Overveiw](#overview)
-- [Binary to Block](#binary-to-block)
-- [Planning](#planning)
-- [Meetings](#meetings)
-
 # Overview
 
 IPLD can be used to link different hash-based datastructures with each other. For instance, one can store a Bitcoin block inside a git object and use that Git object to read transaction inside the Bitcoin block. 
