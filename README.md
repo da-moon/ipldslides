@@ -17,6 +17,7 @@ IPLD uses [`<Node>`](https://github.com/ipfs/go-ipld-format/blob/master/format.g
 ## [`<Node> Interface`](https://github.com/ipfs/go-ipld-format/blob/master/format.go)
 `<Node>` is the base interface all IPLD nodes must implement. Essentially, Content that were stored in an arbitary data-structures would be stored as a node, content such as a Bitcoin Block, A Bitcoin Transaction and so on. 
 `<Node>` interface forces implementation of the following methods
+<pre>
 | Function Name              | Return Data type      | Purpose                                            |
 |----------------------------|-----------------------|----------------------------------------------------|
 | ResolveLink(path []string) | *Link, []string,error | call `<resolve()>` and assert the output is a link |
@@ -26,16 +27,18 @@ IPLD uses [`<Node>`](https://github.com/ipfs/go-ipld-format/blob/master/format.g
 | Size()                     | uint64, error         | return the size of the serialized object           |
 | Resolver                   |                       | An interface that implements other methods         |
 | blocks.Block               |                       | An interface that implements other methods         |
-
+</pre>
 
 ## [`<Link> Struct` ](https://github.com/ipfs/go-ipld-format/blob/master/format.go)
 
+<pre>
 Information needed to traverse from one node to another node is stored in `<Link>`.
 | Name   | Data type | Purpose                                                     |
 |--------|-----------|-------------------------------------------------------------|
 | Name   | string    | unique UTF string name of the link. Seems not so important. |
 | Size   | uint64    | the cumulative size of target object                        |
 | Cid    | *cid.Cid  | Metadata(such as multihash) of the target object            |
+</pre>
 
 ## [`<Resolver> Interface` ](https://github.com/ipfs/go-ipld-format/blob/master/format.go)
 `<Resolver>` interfaces forces implementation of the following methods
